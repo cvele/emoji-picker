@@ -1,7 +1,7 @@
 {
   "name": "cvele-onesignal-emoji-picker",
   "title": "Emoji Picker",
-  "version": "2.0",
+  "version": "2.0.3",
   "description": "Add a slick emoji selector to input fields and textareas on your website.",
   "author": {
     "name": "Cvele fork of Jason Pang @ OneSignal",
