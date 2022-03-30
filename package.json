@@ -32,7 +32,8 @@
     "webpack": "^2.4.1"
   },
   "directories": {
-    "lib": "./lib"
+    "lib": "./lib",
+    "src": "./src"
   },
   "homepage": "https://github.com/one-signal/emoji-picker",
   "keywords": [
