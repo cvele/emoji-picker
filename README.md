@@ -8,17 +8,13 @@ Instantly add Emoji support to input fields on your website! :thumbsup:
 
 # Installation & Usage:
 
-*On Robustness*: This library isn't super robust, so if you find any issues, please report it so it can be fixed (or feel free to fix it yourself). Code quality improvements are also welcome, always looking to make it better!
-
-*On CDN & Multiple Files*: Currently, the number of JavaScript files you have to include is not ideal (6 files). The files will eventually be concatenated and minified, but it might be a bit until this happens. When that's complete, it'll be added to CDNJs as well.
-
-- In your `<head>` section, add the following *stylesheet* links. Adjust the `lib/css` path to match yours.
+1. In your `<head>` section, add the following *stylesheet* links. Adjust the `lib/css` path to match yours.
 
   ```
   <link href="lib/css/emoji.css" rel="stylesheet">
   ```
 
-- Before the end of your `<body>` section, add the following *JavaScript* links. This library depends on jQuery, so jQuery must also be included, before these scripts are run. Once again, adjust the `lib/css` path to match yours.
+2. Before the end of your `<body>` section, add the following *JavaScript* links. This library depends on jQuery, so jQuery must also be included, before these scripts are run. Once again, adjust the `lib/js` path to match yours.
 
   ```
   <!-- ** Don't forget to Add jQuery here ** -->
@@ -65,7 +61,7 @@ Add `data-emoji-input="unicode"` to your input field. Only the `unicode` value i
 
 **I want to limit my input field to a certain number of characters (maxlength)**
 
-The `maxlength` property is mostly supported. Character input and emoji input each count as one character, so it'll stop you from entering more than the max length. Unfortunately, you can paste more than the maxlength number of characters, so that needs to be fixed.
+The `maxlength` property is supported. Character input and emoji input each count as one character, so it'll stop you from entering more than the max length.
 
 **I want classes from my original input field to be copied over to the rich emoji input area**
 

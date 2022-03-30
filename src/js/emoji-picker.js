@@ -33,6 +33,8 @@ import ConfigStorage from "./ConfigStorage"
 
   $.emojiarea = {
     assetsPath : '',
+    spriteSheetPath: '',
+    blankGifPath: '',
     iconSize : 25,
     icons : {},
   };
@@ -239,8 +241,8 @@ import ConfigStorage from "./ConfigStorage"
     var row = emoji[1];
     var column = emoji[2];
     var name = emoji[3];
-    var filename = $.emojiarea.assetsPath + '/emoji_spritesheet_!.png';
-    var blankGifPath = $.emojiarea.assetsPath + '/blank.gif';
+    var filename = $.emojiarea.spriteSheetPath ? $.emojiarea.spriteSheetPath : $.emojiarea.assetsPath + '/emoji_spritesheet_!.png';
+    var blankGifPath = $.emojiarea.blankGifPath ? $.emojiarea.blankGifPath : $.emojiarea.assetsPath + '/blank.gif';
     var iconSize = menu && Config.Mobile ? 26 : $.emojiarea.iconSize
     var xoffset = -(iconSize * column);
     var yoffset = -(iconSize * row);
@@ -325,6 +327,7 @@ import ConfigStorage from "./ConfigStorage"
     if ($textarea.attr('maxlength')) {
       this.$editor.attr('maxlength', $textarea.attr('maxlength'));
     }
+    this.$editor.height($textarea.outerHeight()); //auto adjust height
     this.emojiPopup.appendUnicodeAsImageToElement(this.$editor, $textarea.val());
 
     this.$editor.attr({
@@ -363,24 +366,32 @@ import ConfigStorage from "./ConfigStorage"
       self.updateBodyPadding(editorDiv);
     });
 
-    if (this.options.onPaste) {
-      var self = this;
-      this.$editor.on("paste", function (e) {
-        e.preventDefault();
-
-        if ((e.originalEvent || e).clipboardData) {
-          var content = (e.originalEvent || e).clipboardData.getData('text/plain');
-          var finalText = self.options.onPaste(content);
-          document.execCommand('insertText', false, finalText);
+    this.$editor.on("paste", function (e) {
+      e.preventDefault();
+      var content;
+      var charsRemaining = editorDiv.attr('maxlength') - (editorDiv.text().length + editorDiv.find('img').length);
+      if ((e.originalEvent || e).clipboardData) {
+        content = (e.originalEvent || e).clipboardData.getData('text/plain');
+        if (self.options.onPaste) {
+          content = self.options.onPaste(content);
         }
-        else if (window.clipboardData) {
-          var content = window.clipboardData.getData('Text');
-          var finalText = self.options.onPaste(content);
-          document.selection.createRange().pasteHTML(finalText);
+        if (charsRemaining < content.length) {
+          content = content.substring(0, charsRemaining);
         }
-        editorDiv.scrollTop(editorDiv[0].scrollHeight);
-      });
-    }
+        document.execCommand('insertText', false, content);
+      }
+      else if (window.clipboardData) {
+        content = window.clipboardData.getData('Text');
+        if (self.options.onPaste) {
+          content = self.options.onPaste(content);
+        }
+        if (charsRemaining < content.length) {
+          content = content.substring(0, charsRemaining);
+        }
+        document.selection.createRange().pasteHTML(content);
+      }
+      editorDiv.scrollTop(editorDiv[0].scrollHeight);
+    });
 
     $textarea.wrap('<div class="emoji-picker-container"></div>');
     $textarea.after("<span class='emoji-picker-icon emoji-picker " + (this.options.popupButtonClasses || "") + "' data-id='" + id + "' data-type='picker'></span>");
@@ -565,7 +576,7 @@ import ConfigStorage from "./ConfigStorage"
 
     $body.on('mouseup', function(e) {
       e = e.originalEvent || e;
-      var target = e.originalTarget || e.target || window;
+      var target = e.target || window;
 
       if ($(target).hasClass(self.emojiarea.$dontHideOnClick)) {
         return;
@@ -578,7 +589,6 @@ import ConfigStorage from "./ConfigStorage"
           return;
         }
       }
-
       self.hide();
     });
 
